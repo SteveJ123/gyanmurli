@@ -1,0 +1,187 @@
+<div class="min-h-screen flex flex-col bg-white text-[#222222] font-sans antialiased">
+  <!-- Top Header & Crimson Accent Bar -->
+
+
+  <main class="flex-1 w-full max-w-[1080px] mx-auto px-4 pt-7 pb-10">
+    <!-- Intro Banner -->
+    <section class="text-center max-w-[760px] mx-auto mb-9" aria-labelledby="intro-heading">
+      <h1 id="intro-heading" class="m-0 mb-2 text-[1.65rem] font-bold text-[#1a1a1a]">
+        {{ introHeading }}
+      </h1>
+      <p class="m-0 text-base leading-relaxed text-[#444444]">
+        {{ introDescription }}
+      </p>
+    </section>
+
+    <!-- Two-Column Spiritual Highlight Row -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-11" aria-label="Core spiritual highlights">
+      @for (card of dualFeatureCards; track card.title) {
+        <article class="text-center">
+          <div class="aspect-[4/3] overflow-hidden rounded-md bg-[#f4f4f4] mb-2.5">
+            <img
+              [src]="card.imageUrl"
+              [alt]="card.alt"
+              loading="lazy"
+              class="w-full h-full object-cover block"
+            />
+          </div>
+          <h2 class="m-0 mb-1 text-[1.05rem] font-semibold">{{ card.title }}</h2>
+          <p class="m-0 text-sm text-[#555555]">{{ card.caption }}</p>
+        </article>
+      }
+    </section>
+
+    <!-- 6-Language Murli Grid -->
+    <section class="mb-12" aria-labelledby="languages-heading">
+      <h2 id="languages-heading" class="m-0 mb-5 text-[1.35rem] font-bold text-[#1a1a1a] text-center">
+        Read & Explore by Language
+      </h2>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        @for (lang of languageGrid; track lang.id) {
+          <a
+            [routerLink]="lang.route"
+            [attr.aria-label]="lang.englishLabel + ' Murli'"
+            class="flex flex-col items-center justify-center py-[18px] px-3 border border-[#ececec] rounded-lg bg-[#fff7f8] no-underline text-[#222222] transition duration-150 ease-in-out hover:-translate-y-0.5 hover:border-[#c8102e]"
+          >
+            <img
+              [src]="lang.floralIconUrl"
+              [alt]="lang.englishLabel + ' floral emblem'"
+              loading="lazy"
+              class="w-14 h-14 object-contain mb-2"
+            />
+            <span class="text-[1.05rem] font-bold text-[#c8102e]">{{ lang.nativeLabel }}</span>
+            <span class="text-sm text-[#444444] mt-0.5">{{ lang.englishLabel }}</span>
+          </a>
+        }
+      </div>
+    </section>
+
+    <!-- Upcoming Events (Left Image / Right Text) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-7 items-center mb-12" aria-labelledby="events-heading">
+      <div class="rounded-lg overflow-hidden bg-[#f4f4f4]">
+        <img
+          src="/images/upcoming-events.jpg"
+          alt="Serene garden scene for upcoming spiritual events"
+          loading="lazy"
+          class="w-full h-full object-cover block"
+        />
+      </div>
+      <div>
+        <h2 id="events-heading" class="m-0 mb-3 text-[1.35rem] font-bold text-[#1a1a1a]">
+          Upcoming Events & Announcements
+        </h2>
+        <p class="m-0 text-[0.98rem] leading-[1.65] text-[#3a3a3a]">
+          Join online meditation sessions, retreats, and spiritual study
+          gatherings focused on practical wisdom and inner peace.
+        </p>
+      </div>
+    </section>
+
+    <!-- Special Topics & Daily Blessing (Left List / Right Card Image) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-7 items-center mb-12" aria-labelledby="topics-heading">
+      <div class="order-2 md:order-1">
+        <h2 id="topics-heading" class="m-0 mb-3 text-[1.35rem] font-bold text-[#1a1a1a]">
+          Special Topics
+        </h2>
+        <ul class="m-0 pl-5 list-disc leading-[1.8] text-[#333333]">
+          @for (topic of specialTopics; track topic) {
+            <li>{{ topic }}</li>
+          }
+        </ul>
+      </div>
+      <div class="relative min-h-[240px] rounded-lg overflow-hidden bg-[#f4f4f4] order-1 md:order-2">
+        <img
+          [src]="blessingCard.imageUrl"
+          [alt]="blessingCard.alt"
+          loading="lazy"
+          class="w-full h-full object-cover block"
+        />
+        <!-- <div class="absolute inset-0 flex flex-col justify-end p-[18px] bg-gradient-to-t from-black/75 via-black/30 to-black/10 text-white">
+          <p class="m-0 mb-1 text-[1.15rem] font-bold">{{ blessingCard.quote }}</p>
+          <span class="text-sm opacity-90">{{ blessingCard.subtext }}</span>
+        </div> -->
+      </div>
+    </section>
+
+    <!-- 3-Column Audio / Playlist Section -->
+    <section class="mb-12" aria-labelledby="playlists-heading">
+      <h2 id="playlists-heading" class="m-0 mb-5 text-[1.35rem] font-bold text-[#1a1a1a] text-center">
+        Audio & Playlists
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        @for (item of playlists; track item.id) {
+          <article class="text-center p-4 border border-[#eeeeee] rounded-lg">
+            <div class="w-28 h-28 mx-auto mb-3 rounded-full overflow-hidden border-[3px] border-[#c8102e]">
+              <img
+                [src]="item.imageUrl"
+                [alt]="item.title + ' artwork'"
+                loading="lazy"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <h3 class="m-0 mb-1 text-[1.05rem] font-bold">{{ item.title }}</h3>
+            <p class="m-0 mb-3 text-sm text-[#555555]">{{ item.subtitle }}</p>
+            <button
+              type="button"
+              (click)="togglePlaylist(item.id)"
+              class="py-[7px] px-4 rounded border border-[#c8102e] bg-transparent text-[#c8102e] font-semibold cursor-pointer transition-colors hover:bg-[#c8102e] hover:text-white"
+            >
+              {{ activePlaylistId() === item.id ? 'Hide Player' : 'Listen' }}
+            </button>
+            @if (activePlaylistId() === item.id) {
+              <audio controls [src]="item.audioUrl" class="w-full mt-3">
+                Your browser does not support audio playback.
+              </audio>
+            }
+          </article>
+        }
+      </div>
+    </section>
+
+    <!-- About Us (Left Text / Right Visual) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-7 items-center mb-12" aria-labelledby="about-heading">
+      <div>
+        <h2 id="about-heading" class="m-0 mb-3 text-[1.35rem] font-bold text-[#1a1a1a]">
+          About Us
+        </h2>
+        <p class="m-0 text-[0.98rem] leading-[1.65] text-[#3a3a3a]">
+          Dedicated to sharing clear spiritual knowledge and practical values
+          that help individuals bring calm, clarity, and purpose into everyday
+          life.
+        </p>
+      </div>
+      <div class="rounded-lg overflow-hidden bg-[#f4f4f4]">
+        <img
+          src="/images/about-us.jpg"
+          alt="Peaceful golden horizon and peacock motif"
+          loading="lazy"
+          class="w-full h-full object-cover block"
+        />
+      </div>
+    </section>
+
+    <!-- Floral Contact & Clarification Block -->
+    <section class="max-w-6xl mt-12" aria-labelledby="contact-heading">
+      <!-- <div class="max-w-[640px] mx-auto py-7 px-6 border-[6px] border-double border-[#e58a9b] rounded-2xl bg-[#fffafb] text-center">
+        <h2 id="contact-heading" class="sr-only">Contact & Clarifications</h2>
+        <p class="m-0 text-[0.95rem] leading-[1.65] text-[#2b2b2b]">
+          For any questions, clarifications, or discussion regarding
+          applicability of spiritual knowledge and spiritual laws into practical
+          life, please contact <strong class="font-bold">90001 87835</strong> (Manjeera,
+          Hyderabad).
+        </p>
+      </div> -->
+      <div class="max-w-[640px] mx-auto aspect-[4/3] rounded-lg overflow-hidden">
+        <img
+          src="/images/contact-us.jpg"
+          alt="contact us"
+          loading="lazy"
+          class="w-full h-full object-contain block"
+        />
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  
+</div>
