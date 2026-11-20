@@ -1,17 +1,36 @@
-  <header class="bg-white">
-    <div class="w-full max-w-[1080px] mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
-      <a routerLink="/" class="inline-flex items-center gap-2.5 no-underline text-[#c8102e] font-bold text-xl">
-        <img
-          src="/images/logo.jpg"
-          alt="Gyan Murli logo"
-          class="w-24  h-24 object-contain"
-        />
-        <!-- <span>{{ brandName }}</span> -->
-      </a>
-      <div class="">
+<header class="bg-white">
+  <div class="w-full max-w-[1080px] mx-auto px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+    <a routerLink="/" class="inline-flex items-center gap-2.5 no-underline text-[#c8102e] font-bold text-xl">
+      <img
+        src="/images/logo.jpg"
+        alt="Gyan Murli logo"
+        class="w-24 h-24 object-contain"
+      />
+      <!-- <span>{{ brandName }}</span> -->
+    </a>
+    <div>
       <p class="m-0 text-sm text-[#555555] text-left">निराकार शिव परमात्मा आध्यात्मिक विश्वविद्यालय</p>
       <p class="m-0 text-sm text-[#555555]">Nirakar Shiv Paramatma Adhyatmik Viswa Vidhyalaya</p>
-      </div>
     </div>
-    <div class="h-2 w-full bg-[#c8102e]" aria-hidden="true"></div>
-  </header>
+  </div>
+
+  <!-- Navigation Bar -->
+  <nav aria-label="Primary navigation" class="border-t border-gray-200 bg-white">
+    <ul class="w-full mx-auto px-4 py-2.5 flex items-center justify-center gap-5 sm:gap-7 flex-wrap list-none m-0 text-xl font-semibold text-[#222222]">
+      @for (item of navItems; track item.path) {
+        <li>
+          <a
+            [routerLink]="item.path"
+            routerLinkActive="text-[#c8102e] underline underline-offset-4"
+            [routerLinkActiveOptions]="{ exact: item.path === '/' }"
+            class="no-underline hover:text-[#c8102e] transition-colors"
+          >
+            {{ item.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="h-2 w-full bg-[#c8102e]" aria-hidden="true"></div>
+</header>
