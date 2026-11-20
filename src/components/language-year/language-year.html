@@ -1,0 +1,77 @@
+<div class="min-h-screen flex flex-col bg-white text-[#222222] font-sans antialiased">
+  <!-- Top Header -->
+
+  <!-- Language Switcher Tabs (Optional quick switch between Telugu, Hindi, English) -->
+  <!-- <div class="w-full max-w-[660px] mx-auto px-4 pt-4 flex items-center justify-center gap-2">
+    <a
+      routerLink="/murli/telugu"
+      [class]="activeLang() === 'telugu'
+        ? 'px-3 py-1 text-xs font-semibold rounded bg-[#6b0d15] text-white no-underline'
+        : 'px-3 py-1 text-xs font-semibold rounded border border-gray-300 text-[#333333] hover:border-[#6b0d15] no-underline'"
+    >
+      తెలుగు (Telugu)
+    </a>
+    <a
+      routerLink="/murli/hindi"
+      [class]="activeLang() === 'hindi'
+        ? 'px-3 py-1 text-xs font-semibold rounded bg-[#6b0d15] text-white no-underline'
+        : 'px-3 py-1 text-xs font-semibold rounded border border-gray-300 text-[#333333] hover:border-[#6b0d15] no-underline'"
+    >
+      हिंदी (Hindi)
+    </a>
+    <a
+      routerLink="/murli/english"
+      [class]="activeLang() === 'english'
+        ? 'px-3 py-1 text-xs font-semibold rounded bg-[#6b0d15] text-white no-underline'
+        : 'px-3 py-1 text-xs font-semibold rounded border border-gray-300 text-[#333333] hover:border-[#6b0d15] no-underline'"
+    >
+      English
+    </a>
+  </div> -->
+
+  <!-- Year Archive Table -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-4">
+    <div class="overflow-x-auto">
+      <table class="w-full border-collapse border border-[#666666] text-center text-xs">
+        <thead>
+          <tr class="bg-[#5c0b12] text-xl text-white font-semibold">
+            <th class="border border-[#666666] py-2 px-3 w-[22%]">
+              {{ config().headers.serial }}
+            </th>
+            <th class="border border-[#666666] py-2 px-3 w-[48%]">
+              {{ config().headers.year }}
+            </th>
+            <th class="border border-[#666666] py-2 px-3 w-[30%]">
+              {{ config().headers.link }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rows(); track row.year) {
+            <tr class="bg-white text-xl hover:bg-[#fff8f8]">
+              <td class="border border-[#666666] py-1.5 px-3 text-[#222222]">
+                {{ row.serial }}
+              </td>
+              <td class="border border-[#666666] py-1.5 px-3 text-[#222222]">
+                {{ row.year }}
+              </td>
+              <td class="border border-[#666666] py-1.5 px-3">
+                <a
+                  [routerLink]="row.targetUrl"
+                  class="inline-block text-xl bg-[#6b0d15] hover:bg-[#4e080e] text-white font-medium px-4 py-0.5 rounded-full no-underline transition-colors"
+                >
+                  {{ config().buttonText }}
+                </a>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-3 text-center text-[11px] text-[#444444]">
+    ©2023 gyanmurli. All rights reserved.
+  </footer>
+</div>
