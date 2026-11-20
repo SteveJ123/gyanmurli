@@ -36,7 +36,7 @@ const LANGUAGE_CONFIGS: Record<SupportedLang, LanguageYearConfig> = {
     buttonText: 'Click here',
     startYear: 1969,
     endYear: 2015,
-    basePath: '/murli/telugu',
+    basePath: '/telugu',
   },
   hindi: {
     lang: 'hindi',
@@ -49,7 +49,7 @@ const LANGUAGE_CONFIGS: Record<SupportedLang, LanguageYearConfig> = {
     buttonText: 'Click here',
     startYear: 1969,
     endYear: 2015,
-    basePath: '/murli/hindi',
+    basePath: '/hindi',
   },
   english: {
     lang: 'english',
@@ -62,7 +62,7 @@ const LANGUAGE_CONFIGS: Record<SupportedLang, LanguageYearConfig> = {
     buttonText: 'Click here',
     startYear: 1969,
     endYear: 2015,
-    basePath: '/murli/english',
+    basePath: '/english',
   },
 };
 

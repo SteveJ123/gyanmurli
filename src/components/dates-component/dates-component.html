@@ -1,0 +1,365 @@
+<div class="min-h-screen flex flex-col bg-white text-[#222222] font-sans antialiased">
+  <!-- Header -->
+  <!-- Sub-toolbar: Back to Years & Add Entry -->
+  <div class="w-full max-w-6xl mx-auto px-4 pt-4 flex items-center justify-between gap-2 flex-wrap">
+    <a
+      [routerLink]="['/', activeLang()]"
+      class="text-xs font-semibold text-[#a80000] hover:underline no-underline"
+    >
+      ← Back to {{ activeLang().toUpperCase() }} Years ({{ activeYear() }})
+    </a>
+    <a
+        (click)="openUploadModal()"
+      class="text-xs font-semibold bg-[#4ecdc4] hover:bg-[#3db8af] text-white px-3 py-1 rounded-full no-underline"
+    >
+      + Add Date / S3 Links
+    </a>
+  </div>
+
+  <!-- Date-Wise Murli Table -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-4">
+    @if (loading()) {
+      <p class="text-center text-sm text-gray-500 py-8">Loading {{ activeYear() }} Murlis...</p>
+    } @else if (errorMsg()) {
+      <p class="text-center text-sm text-red-600 py-8">{{ errorMsg() }}</p>
+    } @else {
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-center text-[11px]">
+          <thead>
+            <!-- Top Grouped Headers -->
+            <tr class="bg-white text-[#222222] font-semibold">
+              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+                {{ headers().dateGroup }}
+              </th>
+              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+                {{ headers().textGroup }}
+              </th>
+              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+                {{ headers().essenceGroup }}
+              </th>
+              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+                {{ headers().audioGroup }}
+              </th>
+            </tr>
+            <!-- Sub-column Headers -->
+            <tr class="bg-[#fafafa] text-[#333333] font-semibold">
+              <th class="border border-[#999999] py-1 px-2 w-[7%]">{{ headers().sno }}</th>
+              <th class="border border-[#999999] py-1 px-2 w-[15%]">{{ headers().date }}</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">HTML</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">PDF</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">HTML</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">PDF</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">MP3</th>
+              <th class="border border-[#999999] py-1 px-2 w-[13%]">MP4</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of entries(); track row.id; let idx = $index) {
+              <tr class="border-b border-[#cccccc] hover:bg-[#f7fefe]">
+                <td class="py-2 px-2 text-[#222222] border border-[#999999]">{{ idx + 1 }}</td>
+                <td class="py-2 px-2 font-medium text-[#222222] border border-[#999999]">{{ row.murli_date }}</td>
+
+                <!-- Text HTML -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.text_html_url) {
+                    <a
+                      [href]="row.text_html_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+
+                <!-- Text PDF -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.text_pdf_url) {
+                    <a
+                      [href]="row.text_pdf_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+
+                <!-- Essence HTML -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.essence_html_url) {
+                    <a
+                      [href]="row.essence_html_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+
+                <!-- Essence PDF -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.essence_pdf_url) {
+                    <a
+                      [href]="row.essence_pdf_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+
+                <!-- Audio MP3 -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.audio_mp3_url) {
+                    <a
+                      [href]="row.audio_mp3_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+
+                <!-- Audio MP4 -->
+                <td class="py-2 px-1.5 border border-[#999999]">
+                  @if (row.audio_mp4_url) {
+                    <a
+                      [href]="row.audio_mp4_url"
+                      target="_blank"
+                      rel="noopener"
+                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                    >
+                      Click Here
+                    </a>
+                  } @else {
+                    <span class="text-gray-300">—</span>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="8" class="py-6 text-gray-500 border border-[#999999]">
+                  No Murli dates uploaded yet for {{ activeLang() }} {{ activeYear() }}.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </main>
+
+@if (uploadModalOpen()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 overflow-y-auto"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Add Murli Entry"
+    (click)="onClose()"
+  >
+    <div
+      class="w-full max-w-4xl bg-white rounded-lg shadow-2xl border border-[#bdbdbd] overflow-hidden my-auto flex flex-col"
+      (click)="$event.stopPropagation()"
+    >
+      <!-- Header -->
+      <div class="bg-[#a80000] text-white px-4 py-1.5 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 flex-wrap">
+          <h2 class="text-xs sm:text-sm font-bold m-0">Add Murli Entry</h2>
+          <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded uppercase tracking-wide">
+            {{ lang() }} • {{ year() }}
+          </span>
+          <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded font-semibold">
+            S.No: 
+          </span>
+        </div>
+        <button
+          type="button"
+          (click)="onClose()"
+          aria-label="Close popup"
+          class="w-6 h-6 rounded-full flex items-center justify-center text-white hover:bg-white/20 text-base leading-none border-0 bg-transparent cursor-pointer"
+        >
+          ×
+        </button>
+      </div>
+
+      <!-- Compact Stacked Form Body -->
+      <form
+        [formGroup]="form"
+        (ngSubmit)="onSubmit()"
+        class="p-2.5 sm:p-3.5 space-y-2 text-xs text-[#222222]"
+      >
+        <!-- Section 1: మురళి తేదీ వివరాలు -->
+        <section class="border border-[#d4d4d4] rounded p-2 bg-[#fafafa] space-y-1">
+          <div class="flex items-center justify-between gap-2 border-b border-gray-200 pb-0.5">
+            <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000]">
+              మురళి తేదీ వివరాలు
+            </h3>
+            <span class="text-[10px] font-semibold text-gray-600 bg-white border border-gray-300 px-2 py-0.5 rounded">
+              S.No: 
+            </span>
+          </div>
+
+          <div class="w-full">
+            <label for="murliDateInput" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              Date *
+            </label>
+            <input
+              id="murliDateInput"
+              type="text"
+              formControlName="murli_date"
+              placeholder="05.01.1969"
+              autocomplete="off"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#a80000] focus:outline-none"
+            />
+            @if (form.controls.murli_date.touched && form.controls.murli_date.invalid) {
+              <p class="text-red-600 text-[10px] mt-0.5 mb-0">Date is required.</p>
+            }
+          </div>
+        </section>
+
+        <!-- Section 2: రివైజ్ కోర్స్ మురళీలు -->
+        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
+          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
+            రివైజ్ కోర్స్ మురళీలు
+          </h3>
+
+          <div class="w-full">
+            <label for="revisedHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              HTML (S3 URL)
+            </label>
+            <input
+              id="revisedHtmlUrl"
+              type="url"
+              formControlName="revised_html_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/murli.html"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+
+          <div class="w-full">
+            <label for="revisedPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              PDF (S3 URL)
+            </label>
+            <input
+              id="revisedPdfUrl"
+              type="url"
+              formControlName="revised_pdf_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/murli.pdf"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+        </section>
+
+        <!-- Section 3: సమర్థ సంకల్పాల ఖజానా -->
+        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
+          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
+            సమర్థ సంకల్పాల ఖజానా
+          </h3>
+
+          <div class="w-full">
+            <label for="samarthaHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              HTML (S3 URL)
+            </label>
+            <input
+              id="samarthaHtmlUrl"
+              type="url"
+              formControlName="samartha_html_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/essence.html"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+
+          <div class="w-full">
+            <label for="samarthaPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              PDF (S3 URL)
+            </label>
+            <input
+              id="samarthaPdfUrl"
+              type="url"
+              formControlName="samartha_pdf_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/essence.pdf"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+        </section>
+
+        <!-- Section 4: ఆడియో / వీడియో -->
+        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
+          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
+            ఆడియో / వీడియో
+          </h3>
+
+          <div class="w-full">
+            <label for="audioMp3Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              MP3 (S3 URL)
+            </label>
+            <input
+              id="audioMp3Url"
+              type="url"
+              formControlName="audio_mp3_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/audio.mp3"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+
+          <div class="w-full">
+            <label for="videoMp4Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+              MP4 (S3 URL)
+            </label>
+            <input
+              id="videoMp4Url"
+              type="url"
+              formControlName="video_mp4_url"
+              placeholder="https://your-bucket.s3.amazonaws.com/path/video.mp4"
+              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
+            />
+          </div>
+        </section>
+
+        @if (errorMsg()) {
+          <p class="text-red-600 font-semibold text-[11px] m-0">{{ errorMsg() }}</p>
+        }
+
+        <!-- Actions -->
+        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1 border-t border-gray-200">
+          <button
+            type="button"
+            (click)="onClose()"
+            [disabled]="submitting()"
+            class="w-full sm:w-auto px-4 py-1 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 font-semibold text-xs cursor-pointer"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            [disabled]="submitting()"
+            class="w-full sm:w-auto px-5 py-1 rounded-full bg-[#4ecdc4] hover:bg-[#3db8af] disabled:opacity-50 text-white font-semibold text-xs border-0 cursor-pointer"
+          >
+            {{ submitting() ? 'Saving...' : 'Save' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+}
+</div>
+
