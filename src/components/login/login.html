@@ -1,0 +1,328 @@
+<div class=" w-full bg-slate-100 flex items-center justify-center p-3 sm:p-6 lg:p-8">
+  <div class="w-full max-w-2xl bg-white rounded-2xl shadow-lg border border-slate-200 overflow-hidden flex justify-center">
+
+  
+    <!-- Right Form Panel -->
+    <div class="w-full p-4 sm:p-7">
+      <!-- Mode Switcher -->
+      <div class="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 mb-5">
+        <button
+          type="button"
+          (click)="switchMode('login')"
+          class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer border-0"
+          [class.bg-white]="!isRegister()"
+          [class.text-slate-900]="!isRegister()"
+          [class.shadow-sm]="!isRegister()"
+          [class.text-slate-600]="isRegister()"
+          [class.bg-transparent]="isRegister()"
+        >
+          Login
+        </button>
+
+        <button
+          type="button"
+          (click)="switchMode('register')"
+          class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold transition cursor-pointer border-0"
+          [class.bg-white]="isRegister()"
+          [class.text-slate-900]="isRegister()"
+          [class.shadow-sm]="isRegister()"
+          [class.text-slate-600]="!isRegister()"
+          [class.bg-transparent]="!isRegister()"
+        >
+          Register
+        </button>
+      </div>
+
+      <!-- <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-3.5 sm:space-y-4" novalidate>
+        
+        <div>
+          <label for="mobile" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            Mobile Number *
+          </label>
+          <div class="flex rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-500/20">
+            <span class="inline-flex items-center px-3 bg-slate-50 border-r border-slate-300 text-xs sm:text-sm font-medium text-slate-600 select-none">
+              +91
+            </span>
+            <input
+              id="mobile"
+              type="tel"
+              inputmode="numeric"
+              maxlength="10"
+              formControlName="mobile"
+              placeholder="9876543210"
+              autocomplete="tel-national"
+              class="w-full px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none bg-white"
+            />
+          </div>
+          @if (authForm.controls.mobile.touched && authForm.controls.mobile.invalid) {
+            <p class="mt-1 text-[11px] sm:text-xs text-red-600">Enter a valid 10-digit mobile number.</p>
+          }
+        </div>
+
+        
+        <div>
+          <label for="password" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+            Password *
+          </label>
+          <div class="relative">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              placeholder="Min. 8 characters"
+              [attr.autocomplete]="isRegister() ? 'new-password' : 'current-password'"
+              class="w-full rounded-lg border border-slate-300 bg-white pl-3 pr-14 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+            />
+            <button
+              type="button"
+              (click)="showPassword.set(!showPassword())"
+              class="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-transparent border-0 cursor-pointer"
+            >
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+          @if (authForm.controls.password.touched && authForm.controls.password.invalid) {
+            <p class="mt-1 text-[11px] sm:text-xs text-red-600">Password must be at least 8 characters.</p>
+          }
+        </div>
+
+        
+        @if (isRegister()) {
+          <div>
+            <label for="confirmPassword" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+              Confirm Password *
+            </label>
+            <div class="relative">
+              <input
+                id="confirmPassword"
+                [type]="showConfirmPassword() ? 'text' : 'password'"
+                formControlName="confirmPassword"
+                placeholder="Re-enter password"
+                autocomplete="new-password"
+                class="w-full rounded-lg border border-slate-300 bg-white pl-3 pr-14 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+              />
+              <button
+                type="button"
+                (click)="showConfirmPassword.set(!showConfirmPassword())"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-transparent border-0 cursor-pointer"
+              >
+                {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+              </button>
+            </div>
+            @if (authForm.controls.confirmPassword.touched && authForm.hasError('passwordMismatch')) {
+              <p class="mt-1 text-[11px] sm:text-xs text-red-600">Passwords do not match.</p>
+            }
+          </div>
+        }
+
+        
+        @if (!isRegister()) {
+          <div class="flex items-center justify-between pt-0.5">
+            <label class="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-600 cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="rememberMe"
+                class="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+              />
+              <span>Remember me</span>
+            </label>
+          </div>
+        }
+
+       
+        @if (statusMessage()) {
+          <div
+            class="rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-medium border"
+            [class.bg-red-50]="isError()"
+            [class.text-red-700]="isError()"
+            [class.border-red-200]="isError()"
+            [class.bg-teal-50]="!isError()"
+            [class.text-teal-800]="!isError()"
+            [class.border-teal-200]="!isError()"
+          >
+            {{ statusMessage() }}
+          </div>
+        }
+
+       
+        <button
+          type="submit"
+          [disabled]="submitting()"
+          class="w-full rounded-xl bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white font-semibold py-2.5 px-4 text-xs sm:text-sm transition cursor-pointer border-0"
+        >
+          {{
+            submitting()
+              ? (isRegister() ? 'Registering...' : 'Signing in...')
+              : (isRegister() ? 'Register' : 'Login')
+          }}
+        </button>
+      </form> -->
+
+
+
+      <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="space-y-3.5 sm:space-y-4" novalidate>
+  <!-- Name & Language (Register Only) -->
+  @if (isRegister()) {
+    <!-- <div>
+      <label for="name" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+        Full Name *
+      </label>
+      <input
+        id="name"
+        type="text"
+        formControlName="name"
+        placeholder="Enter your full name"
+        autocomplete="name"
+        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+      />
+      @if (authForm.controls.name.touched && authForm.controls.name.invalid) {
+        <p class="mt-1 text-[11px] sm:text-xs text-red-600">Full name is required.</p>
+      }
+    </div> -->
+
+    <div>
+      <label for="language" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+        Preferred Language *
+      </label>
+      <select
+        id="language"
+        formControlName="language"
+        class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs sm:text-sm text-slate-900 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+      >
+      <option value="">Selected Language</option>
+        <option value="english">English</option>
+        <option value="telugu">Telugu</option>
+        <option value="hindi">Hindi</option>
+      </select>
+      @if (authForm.controls.language.touched && authForm.controls.language.invalid) {
+  <p class="mt-1 text-[11px] sm:text-xs text-red-600">Please select a language.</p>
+}
+    </div>
+  }
+
+  <!-- Mobile Number -->
+  <div>
+    <label for="mobile" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+      Mobile Number *
+    </label>
+    <div class="flex rounded-lg border border-slate-300 bg-white overflow-hidden focus-within:border-teal-600 focus-within:ring-2 focus-within:ring-teal-500/20">
+      <span class="inline-flex items-center px-3 bg-slate-50 border-r border-slate-300 text-xs sm:text-sm font-medium text-slate-600 select-none">
+        +91
+      </span>
+      <input
+        id="mobile"
+        type="tel"
+        inputmode="numeric"
+        maxlength="10"
+        formControlName="mobile"
+        placeholder="9876543210"
+        autocomplete="tel-national"
+        class="w-full px-3 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none bg-white"
+      />
+    </div>
+    @if (authForm.controls.mobile.touched && authForm.controls.mobile.invalid) {
+      <p class="mt-1 text-[11px] sm:text-xs text-red-600">Enter a valid 10-digit mobile number.</p>
+    }
+  </div>
+
+  <!-- Password -->
+  <div>
+    <label for="password" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+      Password *
+    </label>
+    <div class="relative">
+      <input
+        id="password"
+        [type]="showPassword() ? 'text' : 'password'"
+        formControlName="password"
+        placeholder="Min. 4 characters"
+        [attr.autocomplete]="isRegister() ? 'new-password' : 'current-password'"
+        class="w-full rounded-lg border border-slate-300 bg-white pl-3 pr-14 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+      />
+      <button
+        type="button"
+        (click)="showPassword.set(!showPassword())"
+        class="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-transparent border-0 cursor-pointer"
+      >
+        {{ showPassword() ? 'Hide' : 'Show' }}
+      </button>
+    </div>
+    @if (authForm.controls.password.touched && authForm.controls.password.invalid) {
+      <p class="mt-1 text-[11px] sm:text-xs text-red-600">Password must be at least 8 characters.</p>
+    }
+  </div>
+
+  <!-- Confirm Password (Register Only) -->
+  @if (isRegister()) {
+    <div>
+      <label for="confirmPassword" class="block text-xs sm:text-sm font-medium text-slate-700 mb-1">
+        Confirm Password *
+      </label>
+      <div class="relative">
+        <input
+          id="confirmPassword"
+          [type]="showConfirmPassword() ? 'text' : 'password'"
+          formControlName="confirmPassword"
+          placeholder="Re-enter password"
+          autocomplete="new-password"
+          class="w-full rounded-lg border border-slate-300 bg-white pl-3 pr-14 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+        />
+        <button
+          type="button"
+          (click)="showConfirmPassword.set(!showConfirmPassword())"
+          class="absolute right-2 top-1/2 -translate-y-1/2 text-[11px] font-medium text-slate-500 hover:text-slate-800 px-1.5 py-0.5 bg-transparent border-0 cursor-pointer"
+        >
+          {{ showConfirmPassword() ? 'Hide' : 'Show' }}
+        </button>
+      </div>
+      @if (authForm.controls.confirmPassword.touched && authForm.hasError('passwordMismatch')) {
+        <p class="mt-1 text-[11px] sm:text-xs text-red-600">Passwords do not match.</p>
+      }
+    </div>
+  }
+
+  <!-- Remember Me (Login Only) -->
+  @if (!isRegister()) {
+    <div class="flex items-center justify-between pt-0.5">
+      <label class="inline-flex items-center gap-2 text-xs sm:text-sm text-slate-600 cursor-pointer">
+        <input
+          type="checkbox"
+          formControlName="rememberMe"
+          class="h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+        />
+        <span>Remember me</span>
+      </label>
+    </div>
+  }
+
+  <!-- Status Feedback -->
+  @if (statusMessage()) {
+    <div
+      class="rounded-lg px-3.5 py-2.5 text-xs sm:text-sm font-medium border"
+      [class.bg-red-50]="isError()"
+      [class.text-red-700]="isError()"
+      [class.border-red-200]="isError()"
+      [class.bg-teal-50]="!isError()"
+      [class.text-teal-800]="!isError()"
+      [class.border-teal-200]="!isError()"
+    >
+      {{ statusMessage() }}
+    </div>
+  }
+
+  <!-- Submit -->
+  <button
+    type="submit"
+    [disabled]="submitting()"
+    class="w-full rounded-xl bg-teal-600 hover:bg-teal-700 disabled:opacity-60 text-white font-semibold py-2.5 px-4 text-xs sm:text-sm transition cursor-pointer border-0"
+  >
+    {{
+      submitting()
+        ? (isRegister() ? 'Registering...' : 'Signing in...')
+        : (isRegister() ? 'Register' : 'Login')
+    }}
+  </button>
+</form>
+    </div>
+  </div>
+</div>

@@ -1,72 +1,104 @@
 <div class="min-h-screen flex flex-col bg-white text-[#222222] font-sans antialiased">
-  <!-- Header -->
   <!-- Sub-toolbar: Back to Years & Add Entry -->
-  <div class="w-full max-w-6xl mx-auto px-4 pt-4 flex items-center justify-between gap-2 flex-wrap">
+  <div class="w-full max-w-6xl mx-auto px-3 sm:px-4 pt-4 flex items-center justify-between gap-2 flex-wrap">
     <a
-      [routerLink]="['/', activeLang()]"
-      class="text-xs font-semibold text-[#a80000] hover:underline no-underline"
+      [routerLink]="['/lang', activeLang()]"
+      class="text-xs sm:text-sm font-semibold text-[#a80000] hover:underline no-underline"
     >
       ← Back to {{ activeLang().toUpperCase() }} Years ({{ activeYear() }})
     </a>
-    <a
+
+    @if (token && language === activeLang()) {
+      <button
+        type="button"
         (click)="openUploadModal()"
-      class="text-xs font-semibold bg-[#4ecdc4] hover:bg-[#3db8af] text-white px-3 py-1 rounded-full no-underline"
-    >
-      + Add Date / S3 Links
-    </a>
+        class="text-xs font-semibold bg-[#4ecdc4] hover:bg-[#3db8af] text-white px-4 py-2 sm:py-2.5 rounded-full border-0 cursor-pointer transition"
+      >
+        + Add Date / S3 Links
+      </button>
+    }
   </div>
 
   <!-- Date-Wise Murli Table -->
-  <main class="flex-1 w-full max-w-6xl mx-auto px-4 py-4">
+  <main class="flex-1 w-full max-w-6xl mx-auto px-2 sm:px-4 py-4">
     @if (loading()) {
       <p class="text-center text-sm text-gray-500 py-8">Loading {{ activeYear() }} Murlis...</p>
     } @else if (errorMsg()) {
       <p class="text-center text-sm text-red-600 py-8">{{ errorMsg() }}</p>
     } @else {
-      <div class="overflow-x-auto">
-        <table class="w-full border-collapse text-center text-[11px]">
+      <div class="w-full overflow-x-auto rounded-lg border border-[#999999] shadow-xs">
+        <table class="w-full min-w-[720px] lg:min-w-full border-collapse text-center text-[11px] sm:text-xs">
           <thead>
             <!-- Top Grouped Headers -->
             <tr class="bg-white text-[#222222] font-semibold">
-              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+              <th colspan="2" class="border-b border-r border-[#999999] py-2 px-2">
                 {{ headers().dateGroup }}
               </th>
-              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+              <th colspan="2" class="border-b border-r border-[#999999] py-2 px-2">
                 {{ headers().textGroup }}
               </th>
-              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+              <th colspan="2" class="border-b border-r border-[#999999] py-2 px-2">
                 {{ headers().essenceGroup }}
               </th>
-              <th colspan="2" class="border border-[#999999] py-1.5 px-2">
+              <th
+                colspan="2"
+                [class.border-r]="!!token"
+                class="border-b border-[#999999] py-2 px-2"
+              >
                 {{ headers().audioGroup }}
               </th>
+              @if (token) {
+                <th class="border-b border-[#999999] py-2 px-2 bg-[#fff8f8] text-[#a80000]">
+                  {{ headers().actionGroup }}
+                </th>
+              }
             </tr>
+
             <!-- Sub-column Headers -->
             <tr class="bg-[#fafafa] text-[#333333] font-semibold">
-              <th class="border border-[#999999] py-1 px-2 w-[7%]">{{ headers().sno }}</th>
-              <th class="border border-[#999999] py-1 px-2 w-[15%]">{{ headers().date }}</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">HTML</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">PDF</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">HTML</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">PDF</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">MP3</th>
-              <th class="border border-[#999999] py-1 px-2 w-[13%]">MP4</th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[6%]">
+                {{ headers().sno }}
+              </th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[13%]">
+                {{ headers().date }}
+              </th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[11%]">HTML</th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[11%]">PDF</th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[11%]">HTML</th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[11%]">PDF</th>
+              <th class="border-b border-r border-[#999999] py-1.5 px-2 w-[11%]">MP3</th>
+              <th
+                [class.border-r]="!!token"
+                class="border-b border-[#999999] py-1.5 px-2 w-[11%]"
+              >
+                MP4
+              </th>
+              @if (token) {
+                <th class="border-b border-[#999999] py-1.5 px-2 w-[15%] bg-[#fff8f8] text-[#a80000]">
+                  {{ headers().actionSub }}
+                </th>
+              }
             </tr>
           </thead>
+
           <tbody>
             @for (row of entries(); track row.id; let idx = $index) {
-              <tr class="border-b border-[#cccccc] hover:bg-[#f7fefe]">
-                <td class="py-2 px-2 text-[#222222] border border-[#999999]">{{ idx + 1 }}</td>
-                <td class="py-2 px-2 font-medium text-[#222222] border border-[#999999]">{{ row.murli_date }}</td>
+              <tr class="border-b last:border-b-0 border-[#cccccc] hover:bg-[#f7fefe] transition-colors">
+                <td class="py-2 px-2 text-[#222222] border-r border-[#999999]">
+                  {{ idx + 1 }}
+                </td>
+                <td class="py-2 px-2 font-medium text-[#222222] border-r border-[#999999] whitespace-nowrap">
+                  {{ row.murli_date }}
+                </td>
 
                 <!-- Text HTML -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td class="py-2 px-1.5 border-r border-[#999999]">
                   @if (row.text_html_url) {
                     <a
                       [href]="row.text_html_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -76,13 +108,13 @@
                 </td>
 
                 <!-- Text PDF -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td class="py-2 px-1.5 border-r border-[#999999]">
                   @if (row.text_pdf_url) {
                     <a
                       [href]="row.text_pdf_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -92,13 +124,13 @@
                 </td>
 
                 <!-- Essence HTML -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td class="py-2 px-1.5 border-r border-[#999999]">
                   @if (row.essence_html_url) {
                     <a
                       [href]="row.essence_html_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -108,13 +140,13 @@
                 </td>
 
                 <!-- Essence PDF -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td class="py-2 px-1.5 border-r border-[#999999]">
                   @if (row.essence_pdf_url) {
                     <a
                       [href]="row.essence_pdf_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -124,13 +156,13 @@
                 </td>
 
                 <!-- Audio MP3 -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td class="py-2 px-1.5 border-r border-[#999999]">
                   @if (row.audio_mp3_url) {
                     <a
                       [href]="row.audio_mp3_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -140,13 +172,16 @@
                 </td>
 
                 <!-- Audio MP4 -->
-                <td class="py-2 px-1.5 border border-[#999999]">
+                <td
+                  [class.border-r]="!!token"
+                  class="py-2 px-1.5 border-[#999999]"
+                >
                   @if (row.audio_mp4_url) {
                     <a
                       [href]="row.audio_mp4_url"
                       target="_blank"
                       rel="noopener"
-                      class="block bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] leading-tight font-medium p-3 rounded-full no-underline"
+                      class="inline-block w-full min-w-[68px] bg-[#62d6ce] hover:bg-[#49bfb7] text-white text-[10px] sm:text-[11px] leading-tight font-medium py-2 sm:py-2.5 px-2.5 rounded-full no-underline transition"
                     >
                       Click Here
                     </a>
@@ -154,10 +189,37 @@
                     <span class="text-gray-300">—</span>
                   }
                 </td>
+
+                <!-- Action Column: Responsive Edit & Delete -->
+                @if (token) {
+                  <td class="py-2 px-2 whitespace-nowrap">
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-1.5">
+                      <button
+                        type="button"
+                        (click)="openEditModal(row, idx + 1)"
+                        [disabled]="deletingId() === row.id"
+                        class="w-full sm:w-auto px-2.5 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white text-[10px] sm:text-[11px] font-semibold border-0 cursor-pointer transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        (click)="onDeleteRow(row)"
+                        [disabled]="deletingId() === row.id"
+                        class="w-full sm:w-auto px-2.5 py-1.5 rounded-full bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-[10px] sm:text-[11px] font-semibold border-0 cursor-pointer transition"
+                      >
+                        {{ deletingId() === row.id ? 'Deleting...' : 'Delete' }}
+                      </button>
+                    </div>
+                  </td>
+                }
               </tr>
             } @empty {
               <tr>
-                <td colspan="8" class="py-6 text-gray-500 border border-[#999999]">
+                <td
+                  [attr.colspan]="token ? 9 : 8"
+                  class="py-6 text-gray-500"
+                >
                   No Murli dates uploaded yet for {{ activeLang() }} {{ activeYear() }}.
                 </td>
               </tr>
@@ -168,198 +230,275 @@
     }
   </main>
 
-@if (uploadModalOpen()) {
+  <!-- Add / Edit Murli Entry Modal -->
+  @if (uploadModalOpen()) {
+    <div
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 sm:p-4 overflow-y-auto"
+      role="dialog"
+      aria-modal="true"
+      [attr.aria-label]="editingId() ? 'Edit Murli Entry' : 'Add Murli Entry'"
+      (click)="onClose()"
+    >
+      <div
+        class="w-full max-w-4xl bg-white rounded-lg shadow-2xl border border-[#bdbdbd] overflow-hidden my-auto flex flex-col max-h-[95vh]"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Header -->
+        <div class="bg-[#a80000] text-white px-4 py-2 flex items-center justify-between gap-2 shrink-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <h2 class="text-xs sm:text-sm font-bold m-0">
+              {{ editingId() ? 'Edit Murli Entry' : 'Add Murli Entry' }}
+            </h2>
+            <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded uppercase tracking-wide">
+              {{ activeLang() }} • {{ activeYear() }}
+            </span>
+            @if (editingSno()) {
+              <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded font-semibold">
+                S.No: {{ editingSno() }}
+              </span>
+            }
+          </div>
+          <button
+            type="button"
+            (click)="onClose()"
+            aria-label="Close popup"
+            class="w-6 h-6 rounded-full flex items-center justify-center text-white hover:bg-white/20 text-base leading-none border-0 bg-transparent cursor-pointer"
+          >
+            ×
+          </button>
+        </div>
+
+        <!-- Compact Stacked Form Body -->
+        <form
+          [formGroup]="form"
+          (ngSubmit)="onSubmit()"
+          class="p-3 sm:p-4 space-y-2.5 text-xs text-[#222222] overflow-y-auto"
+        >
+          <!-- Section 1: మురళి తేదీ వివరాలు -->
+          <section class="border border-[#d4d4d4] rounded p-2.5 bg-[#fafafa] space-y-1.5">
+            <div class="flex items-center justify-between gap-2 border-b border-gray-200 pb-1">
+              <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000]">
+                మురళి తేదీ వివరాలు
+              </h3>
+              @if (editingSno()) {
+                <span class="text-[10px] font-semibold text-gray-600 bg-white border border-gray-300 px-2 py-0.5 rounded">
+                  S.No: {{ editingSno() }}
+                </span>
+              }
+            </div>
+
+            <div class="w-full">
+              <label for="murliDateInput" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                Date *
+              </label>
+              <input
+                id="murliDateInput"
+                type="text"
+                formControlName="murli_date"
+                placeholder="05.01.1969"
+                autocomplete="off"
+                class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#a80000] focus:outline-none"
+              />
+              @if (form.controls.murli_date.touched && form.controls.murli_date.invalid) {
+                <p class="text-red-600 text-[10px] mt-0.5 mb-0">Date is required.</p>
+              }
+            </div>
+          </section>
+
+          <!-- Section 2: రివైజ్ కోర్స్ మురళీలు -->
+          <section class="border border-[#d4d4d4] rounded p-2.5 bg-white space-y-1.5">
+            <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-1">
+              రివైజ్ కోర్స్ మురళీలు
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div class="w-full">
+                <label for="revisedHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  HTML (S3 URL)
+                </label>
+                <input
+                  id="revisedHtmlUrl"
+                  type="url"
+                  formControlName="revised_html_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/murli.html"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+
+              <div class="w-full">
+                <label for="revisedPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  PDF (S3 URL)
+                </label>
+                <input
+                  id="revisedPdfUrl"
+                  type="url"
+                  formControlName="revised_pdf_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/murli.pdf"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 3: సమర్థ సంకల్పాల ఖజానా -->
+          <section class="border border-[#d4d4d4] rounded p-2.5 bg-white space-y-1.5">
+            <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-1">
+              సమర్థ సంకల్పాల ఖజానా
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div class="w-full">
+                <label for="samarthaHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  HTML (S3 URL)
+                </label>
+                <input
+                  id="samarthaHtmlUrl"
+                  type="url"
+                  formControlName="samartha_html_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/essence.html"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+
+              <div class="w-full">
+                <label for="samarthaPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  PDF (S3 URL)
+                </label>
+                <input
+                  id="samarthaPdfUrl"
+                  type="url"
+                  formControlName="samartha_pdf_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/essence.pdf"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 4: ఆడియో / వీడియో -->
+          <section class="border border-[#d4d4d4] rounded p-2.5 bg-white space-y-1.5">
+            <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-1">
+              ఆడియో / వీడియో
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div class="w-full">
+                <label for="audioMp3Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  MP3 (S3 URL)
+                </label>
+                <input
+                  id="audioMp3Url"
+                  type="url"
+                  formControlName="audio_mp3_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/audio.mp3"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+
+              <div class="w-full">
+                <label for="videoMp4Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
+                  MP4 (S3 URL)
+                </label>
+                <input
+                  id="videoMp4Url"
+                  type="url"
+                  formControlName="video_mp4_url"
+                  placeholder="https://your-bucket.s3.amazonaws.com/path/video.mp4"
+                  class="w-full rounded border border-gray-300 bg-white px-2.5 py-1.5 text-xs focus:border-[#4ecdc4] focus:outline-none"
+                />
+              </div>
+            </div>
+          </section>
+
+          @if (modalErrorMsg()) {
+            <p class="text-red-600 font-semibold text-[11px] m-0">{{ modalErrorMsg() }}</p>
+          }
+
+          <!-- Actions -->
+          <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2 border-t border-gray-200">
+            <button
+              type="button"
+              (click)="onClose()"
+              [disabled]="submitting()"
+              class="w-full sm:w-auto px-4 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 font-semibold text-xs cursor-pointer"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="submitting()"
+              class="w-full sm:w-auto px-5 py-1.5 rounded-full bg-[#4ecdc4] hover:bg-[#3db8af] disabled:opacity-50 text-white font-semibold text-xs border-0 cursor-pointer"
+            >
+              {{ submitting() ? (editingId() ? 'Updating...' : 'Saving...') : (editingId() ? 'Update' : 'Save') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>
+
+@if (pendingDeleteRow(); as row) {
   <div
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-2 overflow-y-auto"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-3 sm:p-4"
     role="dialog"
     aria-modal="true"
-    aria-label="Add Murli Entry"
-    (click)="onClose()"
+    aria-labelledby="deleteModalTitle"
+    (click)="cancelDelete()"
   >
     <div
-      class="w-full max-w-4xl bg-white rounded-lg shadow-2xl border border-[#bdbdbd] overflow-hidden my-auto flex flex-col"
+      class="w-full max-w-md bg-white rounded-lg shadow-2xl border border-[#bdbdbd] overflow-hidden"
       (click)="$event.stopPropagation()"
     >
       <!-- Header -->
-      <div class="bg-[#a80000] text-white px-4 py-1.5 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2 flex-wrap">
-          <h2 class="text-xs sm:text-sm font-bold m-0">Add Murli Entry</h2>
-          <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded uppercase tracking-wide">
-            {{ lang() }} • {{ year() }}
-          </span>
-          <span class="text-[10px] bg-white/15 px-2 py-0.5 rounded font-semibold">
-            S.No: 
-          </span>
-        </div>
+      <div class="bg-[#a80000] text-white px-4 py-2 flex items-center justify-between gap-2">
+        <h2 id="deleteModalTitle" class="text-xs sm:text-sm font-bold m-0">
+          Confirm Delete
+        </h2>
         <button
           type="button"
-          (click)="onClose()"
-          aria-label="Close popup"
-          class="w-6 h-6 rounded-full flex items-center justify-center text-white hover:bg-white/20 text-base leading-none border-0 bg-transparent cursor-pointer"
+          (click)="cancelDelete()"
+          [disabled]="deletingId() === row.id"
+          aria-label="Close confirmation popup"
+          class="w-6 h-6 rounded-full flex items-center justify-center text-white hover:bg-white/20 disabled:opacity-50 text-base leading-none border-0 bg-transparent cursor-pointer"
         >
           ×
         </button>
       </div>
 
-      <!-- Compact Stacked Form Body -->
-      <form
-        [formGroup]="form"
-        (ngSubmit)="onSubmit()"
-        class="p-2.5 sm:p-3.5 space-y-2 text-xs text-[#222222]"
-      >
-        <!-- Section 1: మురళి తేదీ వివరాలు -->
-        <section class="border border-[#d4d4d4] rounded p-2 bg-[#fafafa] space-y-1">
-          <div class="flex items-center justify-between gap-2 border-b border-gray-200 pb-0.5">
-            <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000]">
-              మురళి తేదీ వివరాలు
-            </h3>
-            <span class="text-[10px] font-semibold text-gray-600 bg-white border border-gray-300 px-2 py-0.5 rounded">
-              S.No: 
-            </span>
-          </div>
+      <!-- Body -->
+      <div class="p-4 space-y-3 text-xs sm:text-sm text-[#222222]">
+        <p class="m-0 leading-relaxed">
+          Are you sure you want to delete the Murli entry for
+          <span class="font-bold text-[#a80000]">{{ row.murli_date }}</span>?
+        </p>
 
-          <div class="w-full">
-            <label for="murliDateInput" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              Date *
-            </label>
-            <input
-              id="murliDateInput"
-              type="text"
-              formControlName="murli_date"
-              placeholder="05.01.1969"
-              autocomplete="off"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#a80000] focus:outline-none"
-            />
-            @if (form.controls.murli_date.touched && form.controls.murli_date.invalid) {
-              <p class="text-red-600 text-[10px] mt-0.5 mb-0">Date is required.</p>
-            }
-          </div>
-        </section>
-
-        <!-- Section 2: రివైజ్ కోర్స్ మురళీలు -->
-        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
-          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
-            రివైజ్ కోర్స్ మురళీలు
-          </h3>
-
-          <div class="w-full">
-            <label for="revisedHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              HTML (S3 URL)
-            </label>
-            <input
-              id="revisedHtmlUrl"
-              type="url"
-              formControlName="revised_html_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/murli.html"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <label for="revisedPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              PDF (S3 URL)
-            </label>
-            <input
-              id="revisedPdfUrl"
-              type="url"
-              formControlName="revised_pdf_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/murli.pdf"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-        </section>
-
-        <!-- Section 3: సమర్థ సంకల్పాల ఖజానా -->
-        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
-          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
-            సమర్థ సంకల్పాల ఖజానా
-          </h3>
-
-          <div class="w-full">
-            <label for="samarthaHtmlUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              HTML (S3 URL)
-            </label>
-            <input
-              id="samarthaHtmlUrl"
-              type="url"
-              formControlName="samartha_html_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/essence.html"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <label for="samarthaPdfUrl" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              PDF (S3 URL)
-            </label>
-            <input
-              id="samarthaPdfUrl"
-              type="url"
-              formControlName="samartha_pdf_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/essence.pdf"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-        </section>
-
-        <!-- Section 4: ఆడియో / వీడియో -->
-        <section class="border border-[#d4d4d4] rounded p-2 bg-white space-y-1">
-          <h3 class="m-0 text-xs sm:text-[13px] font-bold text-[#a80000] border-b border-gray-200 pb-0.5">
-            ఆడియో / వీడియో
-          </h3>
-
-          <div class="w-full">
-            <label for="audioMp3Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              MP3 (S3 URL)
-            </label>
-            <input
-              id="audioMp3Url"
-              type="url"
-              formControlName="audio_mp3_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/audio.mp3"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-
-          <div class="w-full">
-            <label for="videoMp4Url" class="block font-semibold text-[11px] mb-0.5 text-[#333333]">
-              MP4 (S3 URL)
-            </label>
-            <input
-              id="videoMp4Url"
-              type="url"
-              formControlName="video_mp4_url"
-              placeholder="https://your-bucket.s3.amazonaws.com/path/video.mp4"
-              class="w-full rounded border border-gray-300 bg-white px-2.5 py-1 text-xs focus:border-[#4ecdc4] focus:outline-none"
-            />
-          </div>
-        </section>
-
-        @if (errorMsg()) {
-          <p class="text-red-600 font-semibold text-[11px] m-0">{{ errorMsg() }}</p>
+        @if (deleteErrorMsg()) {
+          <p class="text-red-600 font-semibold text-xs m-0">
+            {{ deleteErrorMsg() }}
+          </p>
         }
 
-        <!-- Actions -->
-        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-1 border-t border-gray-200">
+        <!-- Yes / No Buttons -->
+        <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-2 border-t border-gray-200">
           <button
             type="button"
-            (click)="onClose()"
-            [disabled]="submitting()"
-            class="w-full sm:w-auto px-4 py-1 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 font-semibold text-xs cursor-pointer"
+            (click)="cancelDelete()"
+            [disabled]="deletingId() === row.id"
+            class="w-full sm:w-auto px-4 py-1.5 rounded-full border border-gray-300 bg-white text-gray-700 hover:bg-gray-100 disabled:opacity-50 text-xs font-semibold cursor-pointer transition"
           >
-            Cancel
+            No
           </button>
           <button
-            type="submit"
-            [disabled]="submitting()"
-            class="w-full sm:w-auto px-5 py-1 rounded-full bg-[#4ecdc4] hover:bg-[#3db8af] disabled:opacity-50 text-white font-semibold text-xs border-0 cursor-pointer"
+            type="button"
+            (click)="confirmDelete()"
+            [disabled]="deletingId() === row.id"
+            class="w-full sm:w-auto px-5 py-1.5 rounded-full bg-red-600 hover:bg-red-700 disabled:opacity-50 text-white text-xs font-semibold border-0 cursor-pointer transition"
           >
-            {{ submitting() ? 'Saving...' : 'Save' }}
+            {{ deletingId() === row.id ? 'Deleting...' : 'Yes' }}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 }
-</div>
-

@@ -56,7 +56,7 @@ export class Home {
       englishLabel: 'Telugu',
       code: 'te',
       floralIconUrl: '/images/PicsArt_telugu.jpg',
-      route: '/telugu',
+      route: 'lang/telugu',
     },
     {
       id: 'hi',
@@ -64,7 +64,7 @@ export class Home {
       englishLabel: 'Hindi',
       code: 'hi',
       floralIconUrl: '/images/picsart_hindi.jpg',
-      route: '/hindi',
+      route: 'lang/hindi',
     },
     {
       id: 'en',
@@ -72,7 +72,7 @@ export class Home {
       englishLabel: 'English',
       code: 'en',
       floralIconUrl: '/images/picsart_english.jpg',
-      route: '/english',
+      route: 'lang/english',
     },
     // {
     //   id: 'kn',
